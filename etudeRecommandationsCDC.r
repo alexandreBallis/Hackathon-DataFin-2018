@@ -2,30 +2,25 @@
  #Necessite le lancement de textClean.r pour la donction textClean()
  fichierSelectionne <- "TabRecommandationsCDC.csv"
  books_cdc <- read.csv(fichierSelectionne,sep=";",header=T,stringsAsFactors=FALSE) 
- colRecommandations <- books_cdc$LibellÈ.recommandation
+ colRecommandations <- books_cdc$Libell√©.recommandation
  colTypePubli       <- books_cdc$Type.de.publication 
- # transformation du data.frame par Èclatement des phrases de recommandations #
- #exemple:
- df <- data.frame(x=letters[runif(3,min=1,max=26)],
-					phrases=c("mon.chat a peur","caro.line n'est plus, dÈputÈe","olive.vert, pas mure"),
-					stringsAsFactors=FALSE)
- df %>% unnest(phrases=strsplit(phrases,"[,.' ]"))
- #fin exemple
+ # transformation du data.frame par √©clatement des phrases de recommandations #
+ 
  df <- books_cdc %>% 
-		unnest(LibellÈ.recommandation=strsplit(LibellÈ.recommandation,"[),.' ]"))
+		unnest(Libell√©.recommandation=strsplit(Libell√©.recommandation,"[),.' ]"))
  #Nettoyage du data frame des recommandations de la cour des comptes
  cdc_count <- books_cdc%>% 
-	mutate(text = stringr::str_replace_all(.$LibellÈ.recommandation,"í", " ")) %>%
-	unnest_tokens(LibellÈ.recommandation, text) %>%
-    filter(!LibellÈ.recommandation %in% stopwords('fr')) %>%
-	count(LibellÈ.recommandation, sort = TRUE)
-	############## nettoyage terminÈ ###############################
+	mutate(text = stringr::str_replace_all(.$Libell√©.recommandation,"‚Äô", " ")) %>%
+	unnest_tokens(Libell√©.recommandation, text) %>%
+    filter(!Libell√©.recommandation %in% stopwords('fr')) %>%
+	count(Libell√©.recommandation, sort = TRUE)
+	############## nettoyage termin√© ###############################
  pool <- textClean(str_c(colRecommandations,sep=" ",collapse=" "))
- pool <- str_replace(pool,"È","e")
+ pool <- str_replace(pool,"√©","e")
  ###  chargements des mots de liaisons inutiles ###
  library("stopwords") 
  motsinutiles <- stopwords(language = "fr") #classe caracteres
- mi <- motsinutiles #saisie simplifiÈ
+ mi <- motsinutiles #saisie simplifi√©
  pool <- setdiff(pool,motsinutiles) #bassin des mots du texte
  ###  fin procedure   mots de liaisons inutiles ###
  poool <- unique(pool)
@@ -34,7 +29,7 @@
  x2 <- stringdist("valorisation",poool,method="lv")
  x3 <- stringdist("valorisation",poool,method="jaccard")
  x4 <- stringdist("valorisation",poool,method="qgram")
- #data.frame Performances de similaritÈ textuelle en fonction des mÈthodes
+ #data.frame Performances de similarit√© textuelle en fonction des m√©thodes
 print("cosine:")
 print(x1[order(x1)[1:6]])
 print(str_c(t(poool[order(x1)][1:6])),collapse=" - ")
@@ -49,10 +44,10 @@ print(x4[order(x4)[1:6]])
 print(str_c(t(poool[order(x4)][1:6])),collapse=" - ")
 #######################################################################
 #texte <- tolower(texte)
-#texte <- str_replace(texte,"È","e")
-#texte.words <- unlist(strsplit(texte,"[[:blank:].-]+")) #dÈcomposition du texte en mots 
+#texte <- str_replace(texte,"√©","e")
+#texte.words <- unlist(strsplit(texte,"[[:blank:].-]+")) #d√©composition du texte en mots 
 #texte.words <- na.omit(str_match(texte.words,"[^0-9]+")) #Nettoyage du texte des chiffres mais renvoie un type matrix
-#texte.words <- as.character(na.omit(str_match(texte.words,"[a-zA-zÈËÁ‡]{3,18}"))) #EnlËvement de mots de liaison non significatifs
+#texte.words <- as.character(na.omit(str_match(texte.words,"[a-zA-z√©√®√ß√†]{3,18}"))) #Enl√®vement de mots de liaison non significatifs
 
 df <- books_cdc
 df[,4] <- sapply(1:nrow(books_cdc),function(i) {books_cdc[i,4] <- tolower(books_cdc[i,4])})
