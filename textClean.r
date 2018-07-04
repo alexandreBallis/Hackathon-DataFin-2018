@@ -14,19 +14,21 @@ library("stringdist")
 filePath <- "http://www.sthda.com/sthda/RDoc/example-files/martin-luther-king-i-have-a-dream-speech.txt"
 filePath <- "montexte.txt"
 texte <- readLines(filePath)
-textClean <- function(texte)
+textClean <- function(texte) #un texte de mots
 {
 #texte <- readLines(filePath) #Adresse relative. 
+library("stopwords") 
+motsinutiles <- stopwords(language = "fr") #classe caracteres
 texte <- tolower(texte)
 texte <- str_replace(texte,"é","e")
 texte.words <- unlist(strsplit(texte,"[[:blank:].-]+")) #décomposition du texte en mots 
 texte.words <- na.omit(str_match(texte.words,"[^0-9]+")) #Nettoyage du texte des chiffres mais renvoie un type matrix
 texte.words <- as.character(na.omit(str_match(texte.words,"[a-zA-zéèçà]{3,18}"))) #Enlèvement de mots de liaison non significatifs
-
-print(str_c("la classe de l'objet texte.words est ",class(texte.words)))
+texte.words <- setdiff(texte.words,motsinutiles)
+#print(str_c("la classe de l'objet texte.words est ",class(texte.words)))
 texte.words <- sort(as.character(texte.words)) # force la classe caractère 
-print("application de la fonction as.character()")
-print(str_c("la classe de l'objet texte.words est ",class(texte.words)))
+#print("application de la fonction as.character()")
+#print(str_c("la classe de l'objet texte.words est ",class(texte.words)))
 return(texte.words)
 }
 #Calcul de la matrice de distance des mots de texte.words. les distances, définies par la méthode de seq_distmatrix 
