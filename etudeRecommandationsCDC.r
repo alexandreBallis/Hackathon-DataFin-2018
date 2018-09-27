@@ -1,5 +1,5 @@
  #ETUDE DES RECOMMANDATIONS DE LA COUR DES COMPTES#
- #Necessite le lancement de textClean.r pour la donction textClean()
+ #Necessite le lancement de textClean.r pour la fonction textClean()
  writeout <- function(X,nom,affichage_noms_variables) {
  write.table(X,file=str_c(nom,".csv"),sep=";",dec=",",row.names=affichage_noms_variables)
  return()
